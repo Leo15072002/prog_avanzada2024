@@ -1,0 +1,252 @@
+Practico 4  Modelo Computacional
+
+
+la aplicativo no garantice que llegue a la forma normal
+la normal garantiza que llegue a su forma normal 
+
+
+Ejercicio 1
+Muestra los pasos de reduccion hasta llegar a la forma normal de la expresion:
+2 * cuadrado (hd [2,4,5,6,7,8])
+
+teniendo en cuenta las definiciones de cuadrado y head
+
+cuadrado :: Int -> Int
+cuadrado x = x * x
+
+hd :: [a] -> a
+hd (x:xs) = x
+
+Respuesta
+
+Orden Aplicativo
+
+2 * cuadrado (hd [2,4,5,6,7,8])
+{definicion hd}
+2 * cuadrado 2
+{definicion cuadrado}
+2 * 2 * 2
+{aritmetica}
+2 * 4
+{aritmetica}
+8
+
+Orden Normal
+
+2 * cuadrado (hd [2,4,5,6,7,8])
+{definicion cuadrado}
+2 * (hd [2,4,5,6,7,8] * hd [2,4,5,6,7,8])
+{definicion hd}
+2 * (2 * hd [2,4,5,6,7,8])
+{definicion hd}
+2 * 2 * 2
+{aritmetica}
+4 * 2
+{aritmetica}
+8
+
+Ejercicio 2
+Dada la definicion linf = 1 : linf. Resuelve los siguientes pasos para la expresión hd linf :
+
+Respuesta 
+
+Orden Aplicativo
+
+hd linf 
+{definicion linf}
+hd (1 : linf)
+{definicion linf}
+hd (1 : (1 : linf))
+{definicion linf}
+hd (1 : (1 : (1 : linf)))
+...
+
+Orden Normal
+
+hd linf 
+{definicion linf}
+hd (1 : linf)
+{definicion hd}
+1
+
+Ejercicio 3
+Dada la siguiente definicion:
+
+f :: Int -> Int -> Int
+f x 0 = x
+f x (n + 1) = cuadrado (f x n)
+
+Resuelve los siguientes pasos para la expresión f 2 3
+
+Respuesta
+
+Orden Aplicativo
+
+f 2 3
+{definicion f}
+cuadrado (f 2 2)
+{definicion f}
+cuadrado (cuadrado (f 2 1))
+{definicion f}
+cuadrado (cuadrado (cuadrado (f 2 0)))
+{definicion f}
+cuadrado (cuadrado (cuadrado (2)))
+{definicion cuadrado}
+cuadrado (cuadrado (2 * 2))
+{aritmetica}
+cuadrado (cuadrado (4))
+{definicion cuadrado}
+cuadrado (4 * 4)
+{aritmetica}
+cuadrado (16)
+{definicion cuadrado}
+16 * 16
+{aritmetica}
+256
+
+Orden Normal
+
+f 2 3 
+{definicion f}
+cuadrado (f 2 2)
+{definicion cuadrado}
+(f 2 2) * (f 2 2)
+{definicion f}
+cuadrado (f 2 1) * (f 2 2)
+{definicion cuadrado}
+((f 2 1) * (f 2 1)) * (f 2 2)
+{definicion f}
+(cuadrado (f 2 0) * (f 2 1)) * (f 2 2)
+{definicion cuadrado}
+(((f 2 0) * (f 2 0)) * (f 2 1)) * (f 2 2)
+{definicion f}
+(( 2 * (f 2 0)) * (f 2 1)) * (f 2 2)
+{definicion f}
+((2 * 2) * (f 2 1)) * (f 2 2)
+{aritmetica}
+(4 * (f 2 1)) * (f 2 2)
+{definicion f}
+(4 * (cuadrado (f 2 0))) * (f 2 2)
+{definicion cuadrado}
+(4 * ((f 2 0) * (f 2 0))) * (f 2 2)
+{definicion f}
+(4 * (2 * (f 2 0))) * (f 2 2)
+{aritmetica}
+(8 * (f 2 0)) * (f 2 2)
+{definicion f}
+8 * 2 * (f 2 2)
+{aritmetica}
+16 * (f 2 2)
+{definicion f}
+16 * cuadrado (f 2 1)
+{definicion cuadrado}
+16 * ((f 2 1) * (f 2 1))
+{definicion f}
+16 * (cuadrado (f 2 0) * (f 2 1))
+{definicion cuadrado}
+16 * (((f 2 0) * (f 2 0)) * (f 2 1))
+{definicion f}
+16 * ((2  * (f 2 0)) * (f 2 1))
+{aritmetica}
+32 * (f 2 0) * (f 2 1)
+{definicion f}
+32 * 2 * (f 2 1)
+{aritmetica}
+64 * (f 2 1)
+{definicion f}
+64 * cuadrado (f 2 0)
+{defincion cuadrado}
+64 * (f 2 0) * (f 2 0)
+{definicion f}
+64 * 2 * (f 2 0)
+{aritmetica}
+128 * (f 2 0)
+{definicion f}
+128 * 2
+{aritmetica}
+256
+
+Ejercicio 4
+Utilizando orden aplicativo y normal, evalua la siguiente expresion: square inf 
+considerando las siguientes definiciones para square e inf
+
+square :: Int -> Int
+square x = x * x 
+
+inf :: Int
+inf = inf + 1
+
+Orden Aplicativo
+
+square inf 
+{definicion inf}
+square (inf + 1)
+{definicion inf}
+square ((inf + 1) + 1)
+{definicion inf}
+square (((inf + 1) + 1) + 1)
+...
+
+Orden Normal
+
+square inf 
+{definicion square}
+inf * inf 
+{definicion inf}
+(inf + 1) * inf
+{definicion inf}
+((inf + 1) + 1) * inf 
+{definicion inf}
+(((inf + 1) + 1) + 1) * inf
+...
+
+Ejercicio 5
+Resuelve el ejercicio 3 utilizando orden de reducción lazy
+
+f 2 3
+1) {def f}
+cuadrado (f 2 2)
+2) {def cuadrado}
+    x * x
+[x = f 2 2]
+3) {def f}
+    x * x 
+[x = cuadrado (f 2 1)]
+4) {def cuadrado}
+    x * x
+[x = y * y]
+[y = (f 2 1)]
+5) {definicion f}
+    x * x
+[x = y * y]
+[y = cuadrado (f 2 0)]
+6) {definicion cuadrado}
+    x * x
+[x = y * y]
+[y = z * z]
+[z = (f 2 0)]
+7) {definicion f}
+    x * x
+[x = y * y]
+= {REEMPLAZO}
+    x * x
+[x = y * y]
+[y = 2 * 2]
+8) {aritmetica}
+    x * x
+[x = y * y]
+[y = 4]
+= {REEMPLAZO}
+    x * x
+[x = 4 * 4]
+9) {aritmetica}
+    x * x
+[x = 16]
+= {REEMPLAZO}
+    16 * 16
+10) {aritmetica}
+256
+
+Ejercicio 6
+Se puede cambiar el orden de evaluación en Haskell? Para que puede servir hacerlo? 
+Dé un ejemplo en el cual sea útil hacerlo
